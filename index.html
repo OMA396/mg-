@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>M&G للنقل والتوريدات</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: #fff;
+      color: #333;
+      line-height: 1.6;
+    }
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+      font-size: 1.4rem;
+      padding: 1rem;
+      background-color: #f9f9f9;
+    }
+    header img {
+      height: 5rem;
+      width: 5rem;
+      object-fit: contain;
+    }
+    header li { list-style: none; }
+    header a {
+      text-decoration: none;
+      color: black;
+      transition: color 0.3s ease;
+    }
+    header a:hover { color: darkgrey; }
+    hr { opacity: 0.3; margin: 0; }
+    .hero {
+      background-color: darkslategray;
+      color: white;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem 1rem;
+      text-align: right;
+    }
+    .heroimg {
+      width: 90%;
+      max-width: 350px;
+      height: auto;
+      border-radius: 2rem;
+      object-fit: cover;
+      margin: 1rem;
+    }
+    .herotext {
+      max-width: 600px;
+      padding: 1rem;
+      font-size: 1.1rem;
+    }
+    .herotext ul { padding-right: 1rem; margin-top: 1rem; }
+    .herotext li { margin-bottom: 0.5rem; }
+    .section-title {
+      text-align: center;
+      font-size: 2rem;
+      margin: 2rem 0 1rem;
+      color: #222;
+    }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      padding: 1rem 2rem 3rem;
+    }
+    .card {
+      background-color: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+    .card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .card-content { padding: 1rem; }
+    .card-content h3 {
+      margin: 0;
+      font-size: 1.2rem;
+      color: #2e2e2e;
+    }
+    .card-content p {
+      font-size: 1rem;
+      margin: 0.5rem 0;
+      color: #555;
+    }
+    .card-content a {
+      display: inline-block;
+      margin-top: 0.5rem;
+      color: darkslategrey;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .card-content a:hover { color: #009688; }
+    #contact {
+      padding: 2rem;
+      background-color: #f1f1f1;
+      text-align: center;
+    }
+    #contact img {
+      width: 50px;
+      height: 50px;
+      margin-bottom: 1rem;
+    }
+    #contact a {
+      color: #25D366;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    @media (max-width: 768px) {
+      header { flex-direction: column; gap: 1rem; }
+      .herotext { font-size: 1rem; padding: 0.5rem; }
+      .heroimg { width: 90%; }
+      .section-title { font-size: 1.5rem; }
+      .card-content h3 { font-size: 1.1rem; }
+      .card-content p { font-size: 0.95rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <img src="ChatGPT Image Jun 11, 2025, 03_07_22 PM.png" alt="شعار" />
+    <li><a href="#products">منتجاتنا</a></li>
+    <li><a href="#contact">اتصل بنا</a></li>
+    <li><a href="#about">عن M&G</a></li>
+  </header>
+
+  <hr />
+
+  <section class="hero" id="about">
+    <img src="ChatGPT Image Jun 11, 2025, 08_48_48 PM.png" alt="منتجات مجمدة" class="heroimg">
+    <div class="herotext">
+      <p>مرحبًا بكم في الصفحة الرسمية لشركة <strong>M&G للنقل والتوريدات</strong>...</p>
+      <ul>
+        <li>🌭 مانجا مجمدة</li>
+        <li>🍈 جوافة مجمدة</li>
+        <li>🍓 فراولة مجمدة</li>
+        <li>🥬 خضروات مجمدة متنوعة</li>
+        <li>🍿 بطاطس صوابع مجمدة</li>
+        <li>🥩 مجمدات استربسات بجودة عالية</li>
+      </ul>
+      <p>🚞 خدماتنا تشمل النقل والتوريد لكافة المحافظات بأعلى كفاءة.</p>
+    </div>
+  </section>
+
+  <section class="product-section" id="products">
+    <h2 class="section-title">منتجاتنا</h2>
+    <div class="product-grid" id="productGrid">
+      <!-- المنتجات من Firebase -->
+    </div>
+  </section>
+
+  <section id="contact">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="واتساب">
+    <p>تواصل معنا على <strong style="color:#25D366;">واتساب</strong> مع <strong>الأستاذ إبراهيم محمد</strong></p>
+    <p>📞 <a href="https://wa.me/201010872267">+201010872267</a></p>
+  </section>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBUYFKVQ25vGirRrQ61rhbF20ppQeePHDA",
+      authDomain: "mgcambany.firebaseapp.com",
+      projectId: "mgcambany",
+      storageBucket: "mgcambany.appspot.com",
+      messagingSenderId: "748457475680",
+      appId: "1:748457475680:web:fbd1ecdcd54acc00760d05",
+      measurementId: "G-S5Z5FFLF9P"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+    const db = firebase.database();
+
+    const params = new URLSearchParams(window.location.search);
+    const isAdmin = params.get("admin") === "1234";
+
+    function loadProducts() {
+      const grid = document.getElementById("productGrid");
+      db.ref("products").on("value", (snapshot) => {
+        grid.innerHTML = "";
+        snapshot.forEach(child => {
+          const data = child.val();
+          const id = child.key;
+          grid.innerHTML += `
+            <div class="card">
+              <img src="${data.image}" alt="${data.name}">
+              <div class="card-content">
+                <h3>${data.name}</h3>
+                <p>${data.description}</p>
+                <a href="details.html?name=${encodeURIComponent(data.name)}&desc=${encodeURIComponent(data.description)}&image=${encodeURIComponent(data.image)}">تفاصيل</a>
+                ${isAdmin ? `<br><button onclick="deleteProduct('${id}')" style="margin-top: 0.5rem; background-color: red; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 5px; cursor: pointer;">🗑️ حذف</button>` : ""}
+              </div>
+            </div>
+          `;
+        });
+      });
+    }
+
+    function deleteProduct(id) {
+      if (confirm("هل أنت متأكد أنك تريد حذف هذا المنتج؟")) {
+        db.ref("products").child(id).remove()
+          .then(() => {
+            alert("✅ تم حذف المنتج بنجاح");
+            location.reload();
+          })
+          .catch(error => {
+            alert("❌ حدث خطأ أثناء الحذف: " + error.message);
+          });
+      }
+    }
+
+    if (isAdmin) {
+      const form = document.createElement("div");
+      form.innerHTML = `
+        <div style="padding: 2rem;">
+          <h2 style="text-align:center;">إضافة منتج جديد</h2>
+          <div style="max-width: 400px; margin:auto;">
+            <input id="name" type="text" placeholder="اسم المنتج" style="width:100%; padding:10px; margin:10px 0;">
+            <input id="image" type="text" placeholder="رابط الصورة" style="width:100%; padding:10px; margin:10px 0;">
+            <textarea id="desc" placeholder="وصف المنتج" style="width:100%; padding:10px; margin:10px 0;"></textarea>
+            <button onclick="addProduct()" style="background-color:green; color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer;">➕ إضافة المنتج</button>
+          </div>
+        </div>
+      `;
+      document.body.insertBefore(form, document.getElementById("contact"));
+    }
+
+    function addProduct() {
+      const name = document.getElementById("name").value.trim();
+      const image = document.getElementById("image").value.trim();
+      const desc = document.getElementById("desc").value.trim();
+
+      if (!name || !image || !desc) {
+        alert("يرجى تعبئة كل الحقول");
+        return;
+      }
+
+      db.ref("products").push({ name, image, description: desc }, (error) => {
+        if (error) {
+          alert("❌ حدث خطأ أثناء الإضافة: " + error.message);
+        } else {
+          alert("✅ تمت إضافة المنتج بنجاح!");
+          document.getElementById("name").value = "";
+          document.getElementById("image").value = "";
+          document.getElementById("desc").value = "";
+        }
+      });
+    }
+
+    loadProducts();
+  </script>
+
+</body>
+</html>
