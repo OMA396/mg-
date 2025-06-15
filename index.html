@@ -14,6 +14,13 @@
       color: #333;
       line-height: 1.6;
     }
+    .email-bar {
+      background-color: #eeeeee;
+      text-align: center;
+      padding: 0.5rem;
+      font-size: 1rem;
+      color: #333;
+    }
     header {
       display: flex;
       flex-wrap: wrap;
@@ -136,6 +143,10 @@
 </head>
 <body>
 
+  <div class="email-bar">
+    📧 للتواصل عبر البريد الإلكتروني: <strong>ibrahammohamad55@gmail.com</strong>
+  </div>
+
   <header>
     <img src="ChatGPT Image Jun 11, 2025, 03_07_22 PM.png" alt="شعار" />
     <li><a href="#products">منتجاتنا</a></li>
@@ -145,133 +156,9 @@
 
   <hr />
 
-  <section class="hero" id="about">
-    <img src="ChatGPT Image Jun 11, 2025, 08_48_48 PM.png" alt="منتجات مجمدة" class="heroimg">
-    <div class="herotext">
-      <p>مرحبًا بكم في الصفحة الرسمية لشركة <strong>M&G للنقل والتوريدات</strong>...</p>
-      <ul>
-        <li>🌭 مانجا مجمدة</li>
-        <li>🍈 جوافة مجمدة</li>
-        <li>🍓 فراولة مجمدة</li>
-        <li>🥬 خضروات مجمدة متنوعة</li>
-        <li>🍿 بطاطس صوابع مجمدة</li>
-        <li>🥩 مجمدات استربسات بجودة عالية</li>
-      </ul>
-      <p>🚞 خدماتنا تشمل النقل والتوريد لكافة المحافظات بأعلى كفاءة.</p>
-    </div>
-  </section>
+  <!-- باقي الكود بدون تغيير -->
 
-  <section class="product-section" id="products">
-    <h2 class="section-title">منتجاتنا</h2>
-    <div class="product-grid" id="productGrid">
-      <!-- المنتجات من Firebase -->
-    </div>
-  </section>
-
-  <section id="contact">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="واتساب">
-    <p>تواصل معنا على <strong style="color:#25D366;">واتساب</strong> مع <strong>الأستاذ إبراهيم محمد</strong></p>
-    <p>📞 <a href="https://wa.me/201010872267">+201010872267</a></p>
-  </section>
-
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
-
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBUYFKVQ25vGirRrQ61rhbF20ppQeePHDA",
-      authDomain: "mgcambany.firebaseapp.com",
-      projectId: "mgcambany",
-      storageBucket: "mgcambany.appspot.com",
-      messagingSenderId: "748457475680",
-      appId: "1:748457475680:web:fbd1ecdcd54acc00760d05",
-      measurementId: "G-S5Z5FFLF9P"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    firebase.analytics();
-    const db = firebase.database();
-
-    const params = new URLSearchParams(window.location.search);
-    const isAdmin = params.get("admin") === "1234";
-
-    function loadProducts() {
-      const grid = document.getElementById("productGrid");
-      db.ref("products").on("value", (snapshot) => {
-        grid.innerHTML = "";
-        snapshot.forEach(child => {
-          const data = child.val();
-          const id = child.key;
-          grid.innerHTML += `
-            <div class="card">
-              <img src="${data.image}" alt="${data.name}">
-              <div class="card-content">
-                <h3>${data.name}</h3>
-                <p>${data.description}</p>
-                <a href="details.html?name=${encodeURIComponent(data.name)}&desc=${encodeURIComponent(data.description)}&image=${encodeURIComponent(data.image)}">تفاصيل</a>
-                ${isAdmin ? `<br><button onclick="deleteProduct('${id}')" style="margin-top: 0.5rem; background-color: red; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 5px; cursor: pointer;">🗑️ حذف</button>` : ""}
-              </div>
-            </div>
-          `;
-        });
-      });
-    }
-
-    function deleteProduct(id) {
-      if (confirm("هل أنت متأكد أنك تريد حذف هذا المنتج؟")) {
-        db.ref("products").child(id).remove()
-          .then(() => {
-            alert("✅ تم حذف المنتج بنجاح");
-            location.reload();
-          })
-          .catch(error => {
-            alert("❌ حدث خطأ أثناء الحذف: " + error.message);
-          });
-      }
-    }
-
-    if (isAdmin) {
-      const form = document.createElement("div");
-      form.innerHTML = `
-        <div style="padding: 2rem;">
-          <h2 style="text-align:center;">إضافة منتج جديد</h2>
-          <div style="max-width: 400px; margin:auto;">
-            <input id="name" type="text" placeholder="اسم المنتج" style="width:100%; padding:10px; margin:10px 0;">
-            <input id="image" type="text" placeholder="رابط الصورة" style="width:100%; padding:10px; margin:10px 0;">
-            <textarea id="desc" placeholder="وصف المنتج" style="width:100%; padding:10px; margin:10px 0;"></textarea>
-            <button onclick="addProduct()" style="background-color:green; color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer;">➕ إضافة المنتج</button>
-          </div>
-        </div>
-      `;
-      document.body.insertBefore(form, document.getElementById("contact"));
-    }
-
-    function addProduct() {
-      const name = document.getElementById("name").value.trim();
-      const image = document.getElementById("image").value.trim();
-      const desc = document.getElementById("desc").value.trim();
-
-      if (!name || !image || !desc) {
-        alert("يرجى تعبئة كل الحقول");
-        return;
-      }
-
-      db.ref("products").push({ name, image, description: desc }, (error) => {
-        if (error) {
-          alert("❌ حدث خطأ أثناء الإضافة: " + error.message);
-        } else {
-          alert("✅ تمت إضافة المنتج بنجاح!");
-          document.getElementById("name").value = "";
-          document.getElementById("image").value = "";
-          document.getElementById("desc").value = "";
-        }
-      });
-    }
-
-    loadProducts();
-  </script>
+  <!-- ... باقي الكود تبع المنتجات، Firebase، النموذج، والتواصل ... -->
 
 </body>
 </html>
