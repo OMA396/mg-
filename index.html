@@ -214,14 +214,23 @@
         }
        
           grid.innerHTML += `
-            <div class="card">
-              ${data.video ? `<video src="${data.video}" controls></video>` : `<img src="${data.image}" alt="${data.name}">`}
-              <div class="card-content">
-                <h3>${data.name}</h3>
-                <p>${data.description}</p>
-                <a href="details.html?name=${encodeURIComponent(data.name)}&desc=${encodeURIComponent(data.description)}&image=${encodeURIComponent(data.image)}">تفاصيل</a>
-                ${isAdmin ? `<br><button onclick="deleteProduct('${id}')" style="margin-top: 0.5rem; background-color: red; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 5px; cursor: pointer;">🗑️ حذف</button>` : ""}
-              </div>
+           grid.innerHTML += `
+  <div class="card">
+    ${data.video && data.video.includes("streamable.com")
+      ? `<iframe src="https://streamable.com/e/${data.video.split("/").pop()}" frameborder="0" allowfullscreen style="width:100%; height:200px;"></iframe>`
+      : data.video
+        ? `<video src="${data.video}" controls></video>`
+        : `<img src="${data.image}" alt="${data.name}">`
+    }
+    <div class="card-content">
+      <h3>${data.name}</h3>
+      <p>${data.description}</p>
+      <a href="details.html?name=${encodeURIComponent(data.name)}&desc=${encodeURIComponent(data.description)}&image=${encodeURIComponent(data.image)}">تفاصيل</a>
+      ${isAdmin ? `<br><button onclick="deleteProduct('${id}')" style="margin-top: 0.5rem; background-color: red; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 5px; cursor: pointer;">🗑️ حذف</button>` : ""}
+    </div>
+  </div>
+`;
+
             </div>
           `;
         });
