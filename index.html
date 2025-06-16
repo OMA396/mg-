@@ -205,6 +205,14 @@
         snapshot.forEach(child => {
           const data = child.val();
           const id = child.key;
+            let media = "";
+          if (data.video && data.video.includes("streamable.com")) {
+          const videoId = data.video.split("/").pop();
+          media = `<iframe src="https://streamable.com/e/${videoId}" frameborder="0" allowfullscreen></iframe>`;
+        } else if (data.video) {
+          media = `<video controls src="${data.video}"></video>`;
+        }
+       
           grid.innerHTML += `
             <div class="card">
               ${data.video ? `<video src="${data.video}" controls></video>` : `<img src="${data.image}" alt="${data.name}">`}
