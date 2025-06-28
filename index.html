@@ -175,45 +175,44 @@
     <p>📧 راسلنا عبر الإيميل: <strong><a href="mailto:ibrahammohamad55@gmail.com">ibrahammohamad55@gmail.com</a></strong></p>
   </section>
 
-  <!-- Firebase -->
-  <!-- Firebase SDK -->
+<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
 
 <script>
-
+  // إعداد Firebase
+ // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyBUYFKVQ25vGirRrQ61rhbF20ppQeePHDA",
-  authDomain: "mgcambany.firebaseapp.com",
-  databaseURL: "https://mgcambany-default-rtdb.firebaseio.com",
-  projectId: "mgcambany",
-  storageBucket: "mgcambany.firebasestorage.app",
-  messagingSenderId: "748457475680",
-  appId: "1:748457475680:web:fbd1ecdcd54acc00760d05",
-  measurementId: "G-S5Z5FFLF9P"
+  apiKey: "AIzaSyDt6j_t06u7OQDxjzvcVjQEet4dQnklp08",
+  authDomain: "mg-new.firebaseapp.com",
+  projectId: "mg-new",
+  storageBucket: "mg-new.firebasestorage.app",
+  messagingSenderId: "303614822754",
+  appId: "1:303614822754:web:3e07cde29ea2eb8406c43b",
+  measurementId: "G-LL39K638GJ"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+  // تهيئة التطبيق (مرّة واحدة)
   firebase.initializeApp(firebaseConfig);
   firebase.analytics();
   const db = firebase.database();
 
+  // تحديد إذا كان المستخدم Admin
   const params = new URLSearchParams(window.location.search);
   const isAdmin = params.get("admin") === "1234";
 
+  // تحميل المنتجات من قاعدة البيانات
   function loadProducts() {
     const grid = document.getElementById("productGrid");
     db.ref("products").on("value", (snapshot) => {
       grid.innerHTML = "";
-      snapshot.forEach(child => {
+      snapshot.forEach((child) => {
         const data = child.val();
         const id = child.key;
         grid.innerHTML += `
           <div class="card">
-            <img src="${data.image}" alt="${data.name}" style="width:100%; height:200px; object-fit:cover;">
+            <img src="${data.image}" alt="${data.name}">
             <div class="card-content">
               <h3>${data.name}</h3>
               <p>${data.description}</p>
@@ -226,19 +225,16 @@ const analytics = getAnalytics(app);
     });
   }
 
+  // حذف منتج
   function deleteProduct(id) {
     if (confirm("هل أنت متأكد أنك تريد حذف هذا المنتج؟")) {
       db.ref("products").child(id).remove()
-        .then(() => {
-          alert("✅ تم حذف المنتج بنجاح");
-          location.reload();
-        })
-        .catch(error => {
-          alert("❌ حدث خطأ أثناء الحذف: " + error.message);
-        });
+        .then(() => alert("✅ تم الحذف بنجاح"))
+        .catch(error => alert("❌ فشل الحذف: " + error.message));
     }
   }
 
+  // عرض الفورم لو المستخدم Admin
   if (isAdmin) {
     const form = document.createElement("div");
     form.innerHTML = `
@@ -255,21 +251,22 @@ const analytics = getAnalytics(app);
     document.body.insertBefore(form, document.getElementById("contact"));
   }
 
+  // إضافة منتج جديد
   function addProduct() {
     const name = document.getElementById("name").value.trim();
     const image = document.getElementById("image").value.trim();
     const desc = document.getElementById("desc").value.trim();
 
     if (!name || !image || !desc) {
-      alert("يرجى تعبئة جميع الحقول");
+      alert("يرجى ملء جميع الحقول");
       return;
     }
 
     db.ref("products").push({ name, image, description: desc }, (error) => {
       if (error) {
-        alert("❌ حدث خطأ أثناء الإضافة: " + error.message);
+        alert("❌ حدث خطأ: " + error.message);
       } else {
-        alert("✅ تمت إضافة المنتج بنجاح!");
+        alert("✅ تمت الإضافة!");
         document.getElementById("name").value = "";
         document.getElementById("image").value = "";
         document.getElementById("desc").value = "";
@@ -277,8 +274,11 @@ const analytics = getAnalytics(app);
     });
   }
 
+  // تحميل المنتجات عند فتح الصفحة
   loadProducts();
 </script>
+
+
 
 
 
