@@ -176,9 +176,10 @@
   </section>
 
   <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
+
 
   <script>
     // إعداد Firebase
@@ -192,42 +193,45 @@
       measurementId: "G-LL39K638GJ"
     };
 
-    firebase.initializeApp(firebaseConfig);
-    firebase.analytics();
+   const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+firebase.analytics();
+
     const db = firebase.database();
 
     const params = new URLSearchParams(window.location.search);
     const isAdmin = params.get("admin") === "1234";
 
-    function loadProducts() {
-      const grid = document.getElementById("productGrid");
-      db.ref("products").on("value", (snapshot) => {
-        grid.innerHTML = "";
-        snapshot.forEach((child) => {
-          const data = child.val();
-          const id = child.key;
-          grid.innerHTML += `
-            <div class="card">
-              <img src="${data.image}" alt="${data.name}">
-              <div class="card-content">
-                <h3>${data.name}</h3>
-                <p>${data.description}</p>
-                <a href="#">تفاصيل</a>
-                ${isAdmin ? `<br><button onclick="deleteProduct('${id}')" style="margin-top: 0.5rem; background-color: red; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 5px; cursor: pointer;">🗑️ حذف</button>` : ""}
-              </div>
-            </div>
-          `;
-        });
-      });
-    }
+function loadProducts() {
+  const grid = document.getElementById("productGrid");
+  db.collection("products").onSnapshot((snapshot) => {
+    grid.innerHTML = "";
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      const id = doc.id;
+      grid.innerHTML += `
+        <div class="card">
+          <img src="${data.image}" alt="${data.name}">
+          <div class="card-content">
+            <h3>${data.name}</h3>
+            <p>${data.description}</p>
+            <a href="details.html?name=${encodeURIComponent(data.name)}&desc=${encodeURIComponent(data.description)}&image=${encodeURIComponent(data.image)}">تفاصيل</a>
+            ${isAdmin ? `<br><button onclick="deleteProduct('${id}')" style="margin-top: 0.5rem; background-color: red; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 5px; cursor: pointer;">🗑️ حذف</button>` : ""}
+          </div>
+        </div>
+      `;
+    });
+  });
+}
 
-    function deleteProduct(id) {
-      if (confirm("هل أنت متأكد أنك تريد حذف هذا المنتج؟")) {
-        db.ref("products").child(id).remove()
-          .then(() => alert("✅ تم الحذف بنجاح"))
-          .catch(error => alert("❌ فشل الحذف: " + error.message));
-      }
-    }
+
+   function deleteProduct(id) {
+  if (confirm("هل أنت متأكد أنك تريد حذف هذا المنتج؟")) {
+    db.collection("products").doc(id).delete()
+      .then(() => alert("✅ تم الحذف بنجاح"))
+      .catch(error => alert("❌ فشل الحذف: " + error.message));
+  }
+}
 
     if (isAdmin) {
       const form = document.createElement("div");
@@ -245,15 +249,30 @@
       document.body.insertBefore(form, document.getElementById("contact"));
     }
 
-    function addProduct() {
-      const name = document.getElementById("name").value.trim();
-      const image = document.getElementById("image").value.trim();
-      const desc = document.getElementById("desc").value.trim();
+ function addProduct() {
+  const name = document.getElementById("name").value.trim();
+  const image = document.getElementById("image").value.trim();
+  const desc = document.getElementById("desc").value.trim();
 
-      if (!name || !image || !desc) {
-        alert("يرجى ملء جميع الحقول");
-        return;
-      }
+  if (!name || !image || !desc) {
+    alert("يرجى ملء جميع الحقول");
+    return;
+  }
+
+  db.collection("products").add({
+    name,
+    image,
+    description: desc
+  }).then(() => {
+    alert("✅ تمت الإضافة!");
+    document.getElementById("name").value = "";
+    document.getElementById("image").value = "";
+    document.getElementById("desc").value = "";
+  }).catch((error) => {
+    alert("❌ فشل الإضافة: " + error.message);
+  });
+}
+
 
       db.ref("products").push({ name, image, description: desc }, (error) => {
         if (error) {
