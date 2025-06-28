@@ -85,7 +85,7 @@
       transform: translateY(-8px);
       box-shadow: 0 8px 20px rgba(0,0,0,0.2);
     }
-    .card img, .card video {
+    .card img {
       width: 100%;
       height: 200px;
       object-fit: cover;
@@ -175,118 +175,100 @@
     <p>📧 راسلنا عبر الإيميل: <strong><a href="mailto:ibrahammohamad55@gmail.com">ibrahammohamad55@gmail.com</a></strong></p>
   </section>
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
 
-<script>
-  // إعداد Firebase
- // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyDt6j_t06u7OQDxjzvcVjQEet4dQnklp08",
-  authDomain: "mg-new.firebaseapp.com",
-  projectId: "mg-new",
-  storageBucket: "mg-new.firebasestorage.app",
-  messagingSenderId: "303614822754",
-  appId: "1:303614822754:web:3e07cde29ea2eb8406c43b",
-  measurementId: "G-LL39K638GJ"
-};
+  <script>
+    // إعداد Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyDt6j_t06u7OQDxjzvcVjQEet4dQnklp08",
+      authDomain: "mg-new.firebaseapp.com",
+      projectId: "mg-new",
+      storageBucket: "mg-new.firebasestorage.app",
+      messagingSenderId: "303614822754",
+      appId: "1:303614822754:web:3e07cde29ea2eb8406c43b",
+      measurementId: "G-LL39K638GJ"
+    };
 
-  // تهيئة التطبيق (مرّة واحدة)
-  firebase.initializeApp(firebaseConfig);
-  firebase.analytics();
-  const db = firebase.database();
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+    const db = firebase.database();
 
-  // تحديد إذا كان المستخدم Admin
-  const params = new URLSearchParams(window.location.search);
-  const isAdmin = params.get("admin") === "1234";
+    const params = new URLSearchParams(window.location.search);
+    const isAdmin = params.get("admin") === "1234";
 
-  // تحميل المنتجات من قاعدة البيانات
-  function loadProducts() {
-    const grid = document.getElementById("productGrid");
-    db.ref("products").on("value", (snapshot) => {
-      grid.innerHTML = "";
-      snapshot.forEach((child) => {
-        const data = child.val();
-        const id = child.key;
-        grid.innerHTML += `
-          <div class="card">
-            <img src="${data.image}" alt="${data.name}">
-            <div class="card-content">
-              <h3>${data.name}</h3>
-              <p>${data.description}</p>
-              <a href="details.html?name=${encodeURIComponent(data.name)}&desc=${encodeURIComponent(data.description)}&image=${encodeURIComponent(data.image)}">تفاصيل</a>
-              ${isAdmin ? `<br><button onclick="deleteProduct('${id}')" style="margin-top: 0.5rem; background-color: red; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 5px; cursor: pointer;">🗑️ حذف</button>` : ""}
+    function loadProducts() {
+      const grid = document.getElementById("productGrid");
+      db.ref("products").on("value", (snapshot) => {
+        grid.innerHTML = "";
+        snapshot.forEach((child) => {
+          const data = child.val();
+          const id = child.key;
+          grid.innerHTML += `
+            <div class="card">
+              <img src="${data.image}" alt="${data.name}">
+              <div class="card-content">
+                <h3>${data.name}</h3>
+                <p>${data.description}</p>
+                <a href="#">تفاصيل</a>
+                ${isAdmin ? `<br><button onclick="deleteProduct('${id}')" style="margin-top: 0.5rem; background-color: red; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 5px; cursor: pointer;">🗑️ حذف</button>` : ""}
+              </div>
             </div>
-          </div>
-        `;
+          `;
+        });
       });
-    });
-  }
-
-  // حذف منتج
-  function deleteProduct(id) {
-    if (confirm("هل أنت متأكد أنك تريد حذف هذا المنتج؟")) {
-      db.ref("products").child(id).remove()
-        .then(() => alert("✅ تم الحذف بنجاح"))
-        .catch(error => alert("❌ فشل الحذف: " + error.message));
-    }
-  }
-
-  // عرض الفورم لو المستخدم Admin
-  if (isAdmin) {
-    const form = document.createElement("div");
-    form.innerHTML = `
-      <div style="padding: 2rem;">
-        <h2 style="text-align:center;">إضافة منتج جديد</h2>
-        <div style="max-width: 400px; margin:auto;">
-          <input id="name" type="text" placeholder="اسم المنتج" style="width:100%; padding:10px; margin:10px 0;">
-          <input id="image" type="text" placeholder="رابط الصورة" style="width:100%; padding:10px; margin:10px 0;">
-          <textarea id="desc" placeholder="وصف المنتج" style="width:100%; padding:10px; margin:10px 0;"></textarea>
-          <button onclick="addProduct()" style="background-color:green; color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer;">➕ إضافة المنتج</button>
-        </div>
-      </div>
-    `;
-    document.body.insertBefore(form, document.getElementById("contact"));
-  }
-
-  // إضافة منتج جديد
-  function addProduct() {
-    const name = document.getElementById("name").value.trim();
-    const image = document.getElementById("image").value.trim();
-    const desc = document.getElementById("desc").value.trim();
-
-    if (!name || !image || !desc) {
-      alert("يرجى ملء جميع الحقول");
-      return;
     }
 
-    db.ref("products").push({ name, image, description: desc }, (error) => {
-      if (error) {
-        alert("❌ حدث خطأ: " + error.message);
-      } else {
-        alert("✅ تمت الإضافة!");
-        document.getElementById("name").value = "";
-        document.getElementById("image").value = "";
-        document.getElementById("desc").value = "";
+    function deleteProduct(id) {
+      if (confirm("هل أنت متأكد أنك تريد حذف هذا المنتج؟")) {
+        db.ref("products").child(id).remove()
+          .then(() => alert("✅ تم الحذف بنجاح"))
+          .catch(error => alert("❌ فشل الحذف: " + error.message));
       }
-    });
-  }
+    }
 
-  // تحميل المنتجات عند فتح الصفحة
-  loadProducts();
-</script>
+    if (isAdmin) {
+      const form = document.createElement("div");
+      form.innerHTML = `
+        <div style="padding: 2rem;">
+          <h2 style="text-align:center;">إضافة منتج جديد</h2>
+          <div style="max-width: 400px; margin:auto;">
+            <input id="name" type="text" placeholder="اسم المنتج" style="width:100%; padding:10px; margin:10px 0;">
+            <input id="image" type="text" placeholder="رابط الصورة" style="width:100%; padding:10px; margin:10px 0;">
+            <textarea id="desc" placeholder="وصف المنتج" style="width:100%; padding:10px; margin:10px 0;"></textarea>
+            <button onclick="addProduct()" style="background-color:green; color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer;">➕ إضافة المنتج</button>
+          </div>
+        </div>
+      `;
+      document.body.insertBefore(form, document.getElementById("contact"));
+    }
 
+    function addProduct() {
+      const name = document.getElementById("name").value.trim();
+      const image = document.getElementById("image").value.trim();
+      const desc = document.getElementById("desc").value.trim();
 
+      if (!name || !image || !desc) {
+        alert("يرجى ملء جميع الحقول");
+        return;
+      }
 
+      db.ref("products").push({ name, image, description: desc }, (error) => {
+        if (error) {
+          alert("❌ حدث خطأ: " + error.message);
+        } else {
+          alert("✅ تمت الإضافة!");
+          document.getElementById("name").value = "";
+          document.getElementById("image").value = "";
+          document.getElementById("desc").value = "";
+        }
+      });
+    }
 
-
-
-
-
- 
-
+    loadProducts();
+  </script>
 
 </body>
 </html>
