@@ -175,67 +175,63 @@
     <p>📧 راسلنا عبر الإيميل: <strong><a href="mailto:ibrahammohamad55@gmail.com">ibrahammohamad55@gmail.com</a></strong></p>
   </section>
 
-  <!-- Firebase SDK -->
-<!-- Firebase SDKs -->
-<script type="module">
-  // Import Firebase modules
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getDatabase, ref, onValue, remove, push } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+ <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
 
-  // Firebase config (الرابط الجديد حسب طلبك)
+<script>
   const firebaseConfig = {
-    apiKey: "AIzaSyDt6j_t06u7OQDxjzvcVjQEet4dQnklp08",
-    authDomain: "mg-new.firebaseapp.com",
-    projectId: "mg-new",
-    storageBucket: "mg-new.firebasestorage.app",
-    messagingSenderId: "303614822754",
-    appId: "1:303614822754:web:3e07cde29ea2eb8406c43b",
-    measurementId: "G-LL39K638GJ"
+    apiKey: "AIzaSyBUYFKVQ25vGirRrQ61rhbF20ppQeePHDA",
+    authDomain: "mgcambany.firebaseapp.com",
+    databaseURL: "https://mgcambany-default-rtdb.firebaseio.com",
+    projectId: "mgcambany",
+    storageBucket: "mgcambany.firebasestorage.app",
+    messagingSenderId: "748457475680",
+    appId: "1:748457475680:web:fbd1ecdcd54acc00760d05",
+    measurementId: "G-S5Z5FFLF9P"
   };
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
+  const db = firebase.database();
 
   const params = new URLSearchParams(window.location.search);
   const isAdmin = params.get("admin") === "1234";
 
   function loadProducts() {
     const grid = document.getElementById("productGrid");
-    onValue(ref(db, "products"), (snapshot) => {
+    db.ref("products").on("value", (snapshot) => {
       grid.innerHTML = "";
       snapshot.forEach(child => {
         const data = child.val();
         const id = child.key;
-
-        if (data.image.includes("pixeldrain.com/u/")) {
-          data.image = data.image.replace("/u/", "/api/file/") + "?download";
-        }
-
-        const isVideo = data.image.includes("pixeldrain.com") || data.image.includes(".mp4");
-        const mediaElement = isVideo
-          ? `<video controls style="width:100%; height:200px;"><source src="${data.image}" type="video/mp4"></video>`
-          : `<img src="${data.image}" alt="${data.name}" style="width:100%; height:200px; object-fit:cover;">`;
-
         grid.innerHTML += `
           <div class="card">
-            ${mediaElement}
+            <img src="${data.image}" alt="${data.name}">
             <div class="card-content">
               <h3>${data.name}</h3>
               <p>${data.description}</p>
               <a href="details.html?name=${encodeURIComponent(data.name)}&desc=${encodeURIComponent(data.description)}&image=${encodeURIComponent(data.image)}">تفاصيل</a>
               ${isAdmin ? `<br><button onclick="deleteProduct('${id}')" style="margin-top: 0.5rem; background-color: red; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 5px; cursor: pointer;">🗑️ حذف</button>` : ""}
             </div>
-          </div>`;
+          </div>
+        `;
       });
     });
   }
 
-  window.deleteProduct = function(id) {
+  function deleteProduct(id) {
     if (confirm("هل أنت متأكد أنك تريد حذف هذا المنتج؟")) {
-      remove(ref(db, "products/" + id)).then(() => location.reload());
+      db.ref("products").child(id).remove()
+        .then(() => {
+          alert("✅ تم حذف المنتج بنجاح");
+          location.reload();
+        })
+        .catch(error => {
+          alert("❌ حدث خطأ أثناء الحذف: " + error.message);
+        });
     }
-  };
+  }
 
   if (isAdmin) {
     const form = document.createElement("div");
@@ -244,7 +240,7 @@
         <h2 style="text-align:center;">إضافة منتج جديد</h2>
         <div style="max-width: 400px; margin:auto;">
           <input id="name" type="text" placeholder="اسم المنتج" style="width:100%; padding:10px; margin:10px 0;">
-          <input id="image" type="text" placeholder="رابط الصورة أو الفيديو من Pixeldrain" style="width:100%; padding:10px; margin:10px 0;">
+          <input id="image" type="text" placeholder="رابط الصورة" style="width:100%; padding:10px; margin:10px 0;">
           <textarea id="desc" placeholder="وصف المنتج" style="width:100%; padding:10px; margin:10px 0;"></textarea>
           <button onclick="addProduct()" style="background-color:green; color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer;">➕ إضافة المنتج</button>
         </div>
@@ -253,39 +249,27 @@
     document.body.insertBefore(form, document.getElementById("contact"));
   }
 
-  window.addProduct = function () {
+  function addProduct() {
     const name = document.getElementById("name").value.trim();
-    let image = document.getElementById("image").value.trim();
+    const image = document.getElementById("image").value.trim();
     const desc = document.getElementById("desc").value.trim();
 
     if (!name || !image || !desc) {
-      alert("❗ يرجى تعبئة جميع الحقول");
+      alert("يرجى تعبئة جميع الحقول");
       return;
     }
 
-    if (image.includes("pixeldrain.com/u/")) {
-      image = image.replace("/u/", "/api/file/") + "?download";
-    }
-
-    const button = document.querySelector("button[onclick='addProduct()']");
-    const originalText = button.textContent;
-    button.textContent = "⏳ جاري الإضافة...";
-    button.disabled = true;
-
-    push(ref(db, "products"), { name, image, description: desc })
-      .then(() => {
-        alert("✅ تم إضافة المنتج بنجاح!");
+    db.ref("products").push({ name, image, description: desc }, (error) => {
+      if (error) {
+        alert("❌ حدث خطأ أثناء الإضافة: " + error.message);
+      } else {
+        alert("✅ تمت إضافة المنتج بنجاح!");
         document.getElementById("name").value = "";
         document.getElementById("image").value = "";
         document.getElementById("desc").value = "";
-        loadProducts();
-      })
-      .catch(err => alert("❌ حدث خطأ: " + err.message))
-      .finally(() => {
-        button.textContent = originalText;
-        button.disabled = false;
-      });
-  };
+      }
+    });
+  }
 
   loadProducts();
 </script>
