@@ -211,6 +211,7 @@
             <div class="card-content">
               <h3>${data.name}</h3>
               <p>${data.description}</p>
+              ${data.video ? `<video controls style="width:100%; margin-top:10px;"><source src="${data.video}" type="video/mp4">فيديو غير مدعوم</video>` : ""}
               <a href="details.html?name=${encodeURIComponent(data.name)}&desc=${encodeURIComponent(data.description)}&image=${encodeURIComponent(data.image)}">تفاصيل</a>
               ${isAdmin ? `<br><button onclick="deleteProduct('${id}')" style="margin-top: 0.5rem; background-color: red; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 5px; cursor: pointer;">🗑️ حذف</button>` : ""}
             </div>
@@ -241,6 +242,7 @@
         <div style="max-width: 400px; margin:auto;">
           <input id="name" type="text" placeholder="اسم المنتج" style="width:100%; padding:10px; margin:10px 0;">
           <input id="image" type="text" placeholder="رابط الصورة" style="width:100%; padding:10px; margin:10px 0;">
+          <input id="video" type="text" placeholder="رابط الفيديو (اختياري)" style="width:100%; padding:10px; margin:10px 0;">
           <textarea id="desc" placeholder="وصف المنتج" style="width:100%; padding:10px; margin:10px 0;"></textarea>
           <button onclick="addProduct()" style="background-color:green; color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer;">➕ إضافة المنتج</button>
         </div>
@@ -252,20 +254,32 @@
   function addProduct() {
     const name = document.getElementById("name").value.trim();
     const image = document.getElementById("image").value.trim();
+    const video = document.getElementById("video").value.trim(); // ✅ رابط الفيديو (اختياري)
     const desc = document.getElementById("desc").value.trim();
 
     if (!name || !image || !desc) {
-      alert("يرجى تعبئة جميع الحقول");
+      alert("يرجى تعبئة الاسم، الصورة، والوصف");
       return;
     }
 
-    db.ref("products").push({ name, image, description: desc }, (error) => {
+    const newProduct = {
+      name,
+      image,
+      description: desc
+    };
+
+    if (video) {
+      newProduct.video = video;
+    }
+
+    db.ref("products").push(newProduct, (error) => {
       if (error) {
         alert("❌ حدث خطأ أثناء الإضافة: " + error.message);
       } else {
         alert("✅ تمت إضافة المنتج بنجاح!");
         document.getElementById("name").value = "";
         document.getElementById("image").value = "";
+        document.getElementById("video").value = "";
         document.getElementById("desc").value = "";
       }
     });
