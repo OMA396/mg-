@@ -178,14 +178,13 @@
  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
-
 <script>
   const firebaseConfig = {
     apiKey: "AIzaSyBUYFKVQ25vGirRrQ61rhbF20ppQeePHDA",
     authDomain: "mgcambany.firebaseapp.com",
     databaseURL: "https://mgcambany-default-rtdb.firebaseio.com",
     projectId: "mgcambany",
-    storageBucket: "mgcambany.firebasestorage.app",
+    storageBucket: "mgcambany.appspot.com",
     messagingSenderId: "748457475680",
     appId: "1:748457475680:web:fbd1ecdcd54acc00760d05",
     measurementId: "G-S5Z5FFLF9P"
@@ -205,13 +204,14 @@
       snapshot.forEach(child => {
         const data = child.val();
         const id = child.key;
+
         grid.innerHTML += `
           <div class="card">
             <img src="${data.image}" alt="${data.name}">
             <div class="card-content">
               <h3>${data.name}</h3>
               <p>${data.description}</p>
-              ${data.video ? `<video controls style="width:100%; margin-top:10px;"><source src="${data.video}" type="video/mp4">فيديو غير مدعوم</video>` : ""}
+              ${data.video ? `<video controls style="width:100%; margin-top:10px;"><source src="${data.video}" type="video/mp4">متصفحك لا يدعم تشغيل الفيديو</video>` : ""}
               <a href="details.html?name=${encodeURIComponent(data.name)}&desc=${encodeURIComponent(data.description)}&image=${encodeURIComponent(data.image)}">تفاصيل</a>
               ${isAdmin ? `<br><button onclick="deleteProduct('${id}')" style="margin-top: 0.5rem; background-color: red; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 5px; cursor: pointer;">🗑️ حذف</button>` : ""}
             </div>
@@ -254,25 +254,25 @@
   function addProduct() {
     const name = document.getElementById("name").value.trim();
     const image = document.getElementById("image").value.trim();
-    const video = document.getElementById("video").value.trim(); // ✅ رابط الفيديو (اختياري)
+    const video = document.getElementById("video").value.trim(); // حقل الفيديو
     const desc = document.getElementById("desc").value.trim();
 
     if (!name || !image || !desc) {
-      alert("يرجى تعبئة الاسم، الصورة، والوصف");
+      alert("يرجى تعبئة جميع الحقول الأساسية (الاسم - الصورة - الوصف)");
       return;
     }
 
-    const newProduct = {
+    const productData = {
       name,
       image,
       description: desc
     };
 
     if (video) {
-      newProduct.video = video;
+      productData.video = video;
     }
 
-    db.ref("products").push(newProduct, (error) => {
+    db.ref("products").push(productData, (error) => {
       if (error) {
         alert("❌ حدث خطأ أثناء الإضافة: " + error.message);
       } else {
@@ -287,6 +287,9 @@
 
   loadProducts();
 </script>
+
+
+
 
 </body>
 </html>
